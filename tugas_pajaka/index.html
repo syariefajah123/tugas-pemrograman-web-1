@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Website Pribadi — Syarief Hidayatulloh</title>
+
+  <!-- sederhana & modern font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #f4f7fb;  
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #2057d6;
+      --soft: #eef4ff;
+      --radius: 12px;
+      --shadow: 0 8px 22px rgba(18,32,63,0.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background:var(--bg);
+      color:#0f1724;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-top:72px; /* space for fixed navbar */
+    }
+
+    /* NAVBAR */
+    .navbar{
+      position:fixed;
+      top:0; left:0; right:0;
+      height:72px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.95), var(--card));
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 22px;
+      box-shadow: 0 2px 8px rgba(15,23,36,0.06);
+      z-index:1000;
+      border-bottom:1px solid rgba(15,23,36,0.04);
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+   .logo-img{
+  width:48px;
+  height:48px;
+  border-radius:10px;
+  object-fit:cover;
+  box-shadow:0 4px 14px rgba(0,0,0,0.08);
+}
+
+    .brand .title{font-weight:600; font-size:15px}
+    .brand .sub{font-size:12px;color:var(--muted)}
+
+    /* menu button */
+    .menu-wrap{position:relative}
+    .menu-btn{
+      background:transparent;
+      border:1px solid rgba(15,23,36,0.06);
+      padding:10px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      display:flex;gap:8px;align-items:center;
+      font-weight:600;
+      transition:all .12s ease;
+    }
+    .menu-btn:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(15,23,36,0.06)}
+
+    /* dropdown */
+    .dropdown{
+      position:absolute;
+      right:0;
+      top:64px;
+      min-width:180px;
+      background:var(--card);
+      border-radius:10px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      border:1px solid rgba(15,23,36,0.04);
+      display:none;
+      flex-direction:column;
+    }
+    .dropdown a{
+      display:block;
+      padding:12px 14px;
+      text-decoration:none;
+      color:#0f1724;
+      font-weight:600;
+      font-size:14px;
+      transition:background .12s ease, color .12s ease;
+    }
+    .dropdown a:hover{background:var(--soft); color:var(--accent)}
+
+    /* layout container */
+    .container{
+      max-width:1000px;
+      margin:20px auto;
+      padding:18px;
+    }
+
+    /* card */
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+      border:1px solid rgba(15,23,36,0.03);
+    }
+
+    h1,h2{margin:0 0 8px 0}
+    .muted{color:var(--muted); font-size:14px}
+
+    /* content sections */
+    .content section{display:none}
+    .content section.active{display:block}
+
+    /* PROFILE layout */
+    .profile{
+      display:flex;
+      gap:18px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+    }
+
+    .avatar-wrap{
+      flex: 0 0 180px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .avatar{
+      width:160px;
+      height:160px;
+      border-radius:16px;
+      object-fit:cover;
+      box-shadow:0 12px 30px rgba(32,87,214,0.08);
+      border:2px solid rgba(32,87,214,0.08);
+    }
+
+    .profile .info{
+      flex:1;
+      min-width:220px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      text-align:left;
+    }
+
+    .kv{margin:6px 0;color:var(--muted)}
+
+    .gallery{
+      display:flex;flex-wrap:wrap;gap:12px;
+      margin-top:12px;
+    }
+    .gallery img{
+      width:260px;height:160px;object-fit:cover;border-radius:10px;
+      box-shadow:0 12px 26px rgba(2,6,23,0.06);
+      border:1px solid rgba(15,23,36,0.03);
+    }
+
+    /* ===== LATIHAN (larger, full image previews) ===== */
+    #latihan .latihan-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:14px }
+
+    /* Desktop: larger thumb width, full image (no crop) */
+    #latihan .latihan-item {
+      display:flex;
+      gap:16px;
+      align-items:flex-start;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid rgba(15,23,36,0.03);
+      background:linear-gradient(90deg,#ffffff,#fbfdff);
+      margin-bottom:0; /* spacing handled by gap */
+    }
+
+    /* thumb now uses width but auto height so image not cropped */
+    .thumb {
+      width:320px;           /* larger preview on desktop */
+      flex:0 0 320px;
+      border-radius:10px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#fff;
+      border:1px solid rgba(15,23,36,0.04);
+      cursor:pointer;
+    }
+
+    /* ensure images take full width and maintain aspect ratio (no crop) */
+    .thumb img {
+      width:100%;
+      height:auto;
+      object-fit:contain; /* keep full content visible */
+      display:block;
+    }
+
+    .item-meta { flex:1; display:flex; flex-direction:column; gap:8px; min-width:0 }
+    .item-meta .title { font-weight:700; color:#0f1724; text-decoration:none }
+    .item-meta .meta-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+    .btn-small {
+      background:transparent;
+      border:1px solid rgba(15,23,36,0.08);
+      padding:6px 9px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+      text-decoration:none;
+      color:var(--muted);
+    }
+    .btn-small:hover { background:var(--soft); color:var(--accent) }
+
+    /* small screens: thumb full-width and taller */
+    @media (max-width:720px){
+      .brand .title{font-size:14px}
+      .avatar{width:140px;height:140px}
+      .gallery img{width:calc(50% - 10px); height:120px}
+      .dropdown{right:12px; left:auto; top:64px}
+      .container{padding:12px}
+
+      /* latihan: stack vertically and thumb full width */
+      #latihan .latihan-item { flex-direction:column; align-items:flex-start; padding:10px }
+      .thumb { width:100%; flex:0 0 auto; height:auto }
+      .thumb img { width:100%; height:auto }
+
+      .item-meta { width:100% }
+
+      .profile{
+        flex-direction:column;
+        align-items:center;
+      }
+      .avatar-wrap{
+        width:100%;
+      }
+      .profile .info{
+        width:100%;
+        padding:0 6px;
+        text-align:left;
+      }
+    }
+
+    /* footer */
+    .footer{ text-align:center;color:var(--muted); font-size:13px; margin-top:8px }
+
+    /* ======= PREVIEW MODAL (images & PDFs) ======= */
+    .preview-overlay{
+      position:fixed;inset:0;background:rgba(7,11,21,0.6);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;
+    }
+    .preview-panel{
+      width:100%;max-width:1200px;height:100%;max-height:96vh;background:var(--card);border-radius:12px;box-shadow:0 20px 60px rgba(2,6,23,0.6);display:flex;flex-direction:column;overflow:hidden;position:relative;
+    }
+    .preview-header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(15,23,36,0.04)}
+    .preview-title{font-weight:700}
+    .preview-controls{margin-left:auto;display:flex;gap:8px;align-items:center}
+    .preview-btn{background:transparent;border:1px solid rgba(15,23,36,0.06);padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:700}
+
+    .preview-body{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:14px;background:linear-gradient(180deg,#fbfdff,#ffffff)}
+
+    .preview-img{max-width:100%;max-height:100%;height:auto;display:block}
+
+    /* PDF canvas container */
+    .pdf-canvas-wrap{display:flex;flex-direction:column;gap:12px;width:100%;align-items:center}
+    .pdf-single-canvas{box-shadow:0 12px 26px rgba(2,6,23,0.06);border-radius:6px;border:1px solid rgba(15,23,36,0.03);overflow:hidden}
+
+    /* smaller device tweaks */
+    @media (max-width:720px){
+      .preview-panel{border-radius:8px;max-width:100%;max-height:96vh}
+      .preview-header{padding:10px}
+    }
+
+  </style>
+</head>
+<body>
+
+  <header class="navbar" role="banner">
+    <div class="brand" aria-hidden="false">
+      <img src="logo.png" class="logo-img" alt="Logo">
+      <div>
+        <div class="title">Syarief Hidayatulloh</div>
+        <div class="sub">Teknik Informatika — Universitas Pamulang</div>
+      </div>
+    </div>
+
+    <div class="menu-wrap" aria-haspopup="true">
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuList">
+        ☰ Menu
+      </button>
+
+      <nav id="menuList" class="dropdown" role="menu" aria-label="Primary menu">
+        <a href="#" data-target="home" role="menuitem">Home</a>
+        <a href="#" data-target="profil" role="menuitem">Profil</a>
+        <a href="#" data-target="gallery" role="menuitem">Gallery</a>
+        <a href="#" data-target="latihan" role="menuitem">Latihan</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <section class="card content" aria-live="polite">
+      <section id="home" class="active" aria-labelledby="homeTitle">
+        <div style="padding:40px 20px;text-align:center;margin-bottom:10px;">
+          <h1 id="homeTitle" style="margin:0;font-size:42px;font-weight:700;letter-spacing:1px;color:#1f2b47;">
+            Syarief Hidayatulloh
+          </h1>
+        </div>
+      </section>
+
+      <section id="profil" aria-labelledby="profilTitle">
+        <h2 id="profilTitle">Profil</h2>
+        <div class="profile" style="margin-top:12px">
+          <div class="avatar-wrap" aria-hidden="false">
+            <img src="WhatsApp Image 2025-11-21 at 11.22.01.jpeg" class="avatar" alt="Foto Profil">
+          </div>
+          <div class="info">
+            <p class="kv"><strong>NIM:</strong> 231011403169</p>
+            <p class="kv"><strong>Nama:</strong> Syarief Hidayatulloh</p>
+            <p class="kv"><strong>Tanggal Lahir:</strong> 18 februari 2004</p>
+            <p class="kv"><strong>Universitas:</strong> Universitas Pamulang</p>
+            <p class="kv"><strong>Program Studi:</strong> Teknik Informatika S1</p>
+            <p class="kv"><strong>Prog. Perkuliahan:</strong> Reguler B</p>
+            <p class="kv"><strong>Kelas:</strong> 05TPLM004</p>
+            <p class="kv"><strong>Status Mahasiswa:</strong> Aktif</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="gallery" aria-labelledby="galleryTitle">
+        <h2 id="galleryTitle">Gallery</h2>
+        <p class="muted" style="margin-top:6px">Beberapa screenshot atau mockup proyek.</p>
+        <div class="gallery">
+          <img src="galeri1 (1).jpeg" alt="Project 1">
+          <img src="galeri1 (2).jpeg" alt="Project 2">
+          <img src="galeri1 (3).jpeg" alt="Project 3">
+        </div>
+      </section>
+
+      <section id="latihan" aria-labelledby="latihanTitle">
+        <h2 id="latihanTitle">Daftar Tugas</h2>
+        <p class="muted" style="margin-top:8px">
+          Kumpulan Tugas Syarief Hidayatulloh
+        </p>
+
+        <ul class="latihan-list">
+          <!-- contoh - ubah sesuai filemu -->
+          <li>
+            <a class="hidden-link" href="PERTEMMUAN2.JPG" target="_blank">Tugas E-Learning Pertemuan 1</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN3.JPG" target="_blank">Tugas E-Learning Pertemuan 2</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN4.JPG" target="_blank">Tugas E-Learning Pertemuan 3</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN5.JPG" target="_blank">Tugas E-Learning Pertemuan 4</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN6.JPG" target="_blank">Tugas E-Learning Pertemuan 5</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN7.JPG" target="_blank">Tugas E-Learning Pertemuan 6</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN8.JPG" target="_blank">Tugas E-Learning Pertemuan 7</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN9.JPG" target="_blank">Tugas E-Learning Pertemuan 8</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN10.JPG" target="_blank">Tugas E-Learning Pertemuan 9</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN11.JPG" target="_blank">Tugas E-Learning Pertemuan 10</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN12.JPG" target="_blank">Tugas E-Learning Pertemuan 11</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN13.JPG" target="_blank">Tugas E-Learning Pertemuan 12</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN14.JPG" target="_blank">Tugas E-Learning Pertemuan 13</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN15.JPG" target="_blank">Tugas E-Learning Pertemuan 14</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN16.JPG" target="_blank">Tugas E-Learning Pertemuan 15</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN 17.JPG" target="_blank">Tugas E-Learning Pertemuan 16</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN18.JPG" target="_blank">Tugas E-Learning Pertemuan 17</a>
+          </li>
+
+          <li>
+            <a class="hidden-link" href="PERTEMUAN18.JPG" target="_blank">Tugas E-Learning Pertemuan 18</a>
+          </li>
+        </ul>
+
+      </section>
+    </section>
+
+    <div class="footer">© 2025 Syarief Hidayatulloh— Universitas Pamulang</div>
+  </main>
+
+  <!-- PREVIEW MODAL MARKUP -->
+  <div id="previewOverlay" class="preview-overlay" role="dialog" aria-hidden="true">
+    <div class="preview-panel" role="document">
+      <div class="preview-header">
+        <div class="preview-title" id="previewTitle">Preview</div>
+        <div class="preview-controls">
+          <button id="prevPage" class="preview-btn" title="Sebelumnya" aria-label="Sebelumnya">◀</button>
+          <button id="nextPage" class="preview-btn" title="Berikutnya" aria-label="Berikutnya">▶</button>
+          <button id="showAllPages" class="preview-btn" title="Tampilkan semua halaman" aria-label="Tampilkan semua halaman">Semua</button>
+          <button id="zoomIn" class="preview-btn" title="Perbesar" aria-label="Perbesar">＋</button>
+          <button id="zoomOut" class="preview-btn" title="Perkecil" aria-label="Perkecil">－</button>
+          <button id="closePreview" class="preview-btn" title="Tutup" aria-label="Tutup">✕</button>
+        </div>
+      </div>
+      <div class="preview-body" id="previewBody">
+        <!-- dynamic content: image element OR pdf canvas container -->
+        <img id="previewImage" class="preview-img" alt="Preview" style="display:none">
+        <div id="pdfWrap" class="pdf-canvas-wrap" style="display:none; width:100%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= Script utama (navigasi dropdown) ======= -->
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const dropdown = document.getElementById('menuList');
+    const links = dropdown.querySelectorAll('a');
+    const sections = document.querySelectorAll('.content > section');
+
+    function closeDropdown(){
+      dropdown.style.display = 'none';
+      menuBtn.setAttribute('aria-expanded','false');
+    }
+    function openDropdown(){
+      dropdown.style.display = 'flex';
+      dropdown.style.flexDirection = 'column';
+      menuBtn.setAttribute('aria-expanded','true');
+    }
+
+    menuBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      if(dropdown.style.display === 'flex') closeDropdown(); else openDropdown();
+    });
+
+    links.forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const target = a.dataset.target;
+        sections.forEach(s => s.id === target ? s.classList.add('active') : s.classList.remove('active'));
+        closeDropdown();
+        const t = document.getElementById(target);
+        if(t) t.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    document.addEventListener('click', (e)=>{
+      if(!dropdown.contains(e.target) && !menuBtn.contains(e.target)) closeDropdown();
+    });
+
+    // set initial active: home
+    sections.forEach(s => s.id === 'home' ? s.classList.add('active') : s.classList.remove('active'));
+  </script>
+
+  <!-- ======= PDF.js (render halaman 1 sebagai thumbnail) ======= -->
+  <script src="https://unpkg.com/pdfjs-dist@2.15.349/build/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@2.15.349/build/pdf.worker.min.js';
+
+    (function renderLatihanThumbnails(){
+      const latihanList = document.querySelector('#latihan .latihan-list');
+      if(!latihanList) return;
+
+      // ambil semua li yang memiliki link
+      const rawItems = Array.from(latihanList.querySelectorAll('li'));
+      if(rawItems.length === 0) return;
+
+      // preview modal elements
+      const previewOverlay = document.getElementById('previewOverlay');
+      const previewImage = document.getElementById('previewImage');
+      const pdfWrap = document.getElementById('pdfWrap');
+      const previewTitle = document.getElementById('previewTitle');
+      const closePreview = document.getElementById('closePreview');
+      const prevPageBtn = document.getElementById('prevPage');
+      const nextPageBtn = document.getElementById('nextPage');
+      const showAllBtn = document.getElementById('showAllPages');
+      const zoomInBtn = document.getElementById('zoomIn');
+      const zoomOutBtn = document.getElementById('zoomOut');
+
+      // PDF viewer state
+      let currentPdf = null; // pdfjs document
+      let currentPage = 1;
+      let currentScale = 1.0;
+      let isShowingAll = false;
+
+      function openImagePreview(src, title){
+        previewTitle.textContent = title || 'Gambar';
+        previewImage.src = src;
+        previewImage.style.display = 'block';
+        pdfWrap.style.display = 'none';
+        previewOverlay.style.display = 'flex';
+        previewOverlay.setAttribute('aria-hidden','false');
+      }
+
+      function clearPdfWrap(){n
+      }
+
+      function openPdfPreview(href, title){
+        previewTitle.textContent = title || 'PDF Preview';
+        previewImage.style.display = 'none';
+        pdfWrap.style.display = 'flex';
+        pdfWrap.innerHTML = '<div style="width:100%;color:var(--muted);padding:14px;">Memuat PDF…</div>';
+        previewOverlay.style.display = 'flex';
+        previewOverlay.setAttribute('aria-hidden','false');
+        currentScale = 1.0; currentPage = 1; isShowingAll = false;
+
+        // load pdf (pdfjs)
+        pdfjsLib.getDocument(href).promise.then(pdfDoc => {
+          currentPdf = pdfDoc;
+          // render first page
+          renderPdfPage(currentPage);
+          // enable/disable nav buttons
+          updateNavButtons();
+        }).catch(err => {
+          pdfWrap.innerHTML = '<div style="width:100%;color:var(--muted);padding:14px;">Preview tidak tersedia</div>';
+          console.warn('PDF preview error', href, err);
+        });
+      }
+
+      function updateNavButtons(){
+        if(!currentPdf){ prevPageBtn.style.display='none'; nextPageBtn.style.display='none'; showAllBtn.style.display='none'; return; }
+        prevPageBtn.style.display = currentPdf.numPages>1 ? 'inline-flex' : 'none';
+        nextPageBtn.style.display = currentPdf.numPages>1 ? 'inline-flex' : 'none';
+        showAllBtn.style.display = currentPdf.numPages>1 ? 'inline-flex' : 'none';
+      }
+
+      function renderPdfPage(pageNumber){
+        if(!currentPdf) return;
+        isShowingAll = false;
+        pdfWrap.innerHTML = '';
+        currentPdf.getPage(pageNumber).then(page => {
+          const viewport = page.getViewport({ scale: currentScale });
+          const canvas = document.createElement('canvas');
+          canvas.className = 'pdf-single-canvas';
+          canvas.width = Math.floor(viewport.width);
+          canvas.height = Math.floor(viewport.height);
+          const ctx = canvas.getContext('2d');
+          // clear and append
+          const container = document.createElement('div');
+          container.style.width = '100%';
+          container.style.display = 'flex';
+          container.style.justifyContent = 'center';
+          container.appendChild(canvas);
+          pdfWrap.appendChild(container);
+
+          page.render({ canvasContext: ctx, viewport }).promise.then(()=>{
+            // scale canvas to fit container width if necessary
+            fitCanvasToContainer(canvas);
+          });
+        });
+      }
+
+      function fitCanvasToContainer(canvas){
+        // ensure canvas fits visually (CSS will keep quality)
+        const maxWidth = Math.min(document.querySelector('.preview-panel').clientWidth - 40, window.innerWidth - 80);
+        if(canvas.width > maxWidth){
+          canvas.style.width = '100%';
+          canvas.style.height = 'auto';
+        } else {
+          canvas.style.width = canvas.width + 'px';
+          canvas.style.height = canvas.height + 'px';
+        }
+      }
+
+      async function renderAllPages(){
+        if(!currentPdf) return;
+        isShowingAll = true;
+        pdfWrap.innerHTML = '';
+        const total = currentPdf.numPages;
+        for(let p=1;p<=total;p++){
+          try{
+            // small delay to keep UI responsive for large PDFs
+            const page = await currentPdf.getPage(p);
+            const viewport = page.getViewport({ scale: currentScale * 0.9 });
+            const canvas = document.createElement('canvas');
+            canvas.className = 'pdf-single-canvas';
+            canvas.width = Math.floor(viewport.width);
+            canvas.height = Math.floor(viewport.height);
+            const ctx = canvas.getContext('2d');
+            const container = document.createElement('div');
+            container.style.width = '100%';
+            container.style.display = 'flex';
+            container.style.justifyContent = 'center';
+            container.appendChild(canvas);
+            pdfWrap.appendChild(container);
+            await page.render({ canvasContext: ctx, viewport }).promise;
+            fitCanvasToContainer(canvas);
+          }catch(err){ console.warn('Error render page', p, err); }
+        }
+      }
+
+      function closePreviewPanel(){
+        previewOverlay.style.display = 'none';
+        previewOverlay.setAttribute('aria-hidden','true');
+        previewImage.src = '';
+        pdfWrap.innerHTML = '';
+        currentPdf = null; currentPage = 1; currentScale = 1.0; isShowingAll=false;
+      }
+
+      closePreview.addEventListener('click', closePreviewPanel);
+      previewOverlay.addEventListener('click', (e)=>{
+        if(e.target === previewOverlay) closePreviewPanel();
+      });
+
+      prevPageBtn.addEventListener('click', ()=>{
+        if(!currentPdf) return;
+        if(currentPage>1){ currentPage--; renderPdfPage(currentPage); updateNavButtons(); }
+      });
+      nextPageBtn.addEventListener('click', ()=>{
+        if(!currentPdf) return;
+        if(currentPage<currentPdf.numPages){ currentPage++; renderPdfPage(currentPage); updateNavButtons(); }
+      });
+      showAllBtn.addEventListener('click', ()=>{ if(currentPdf) renderAllPages(); });
+      zoomInBtn.addEventListener('click', ()=>{
+        currentScale = Math.min(4, currentScale + 0.25);
+        if(currentPdf){ if(isShowingAll) renderAllPages(); else renderPdfPage(currentPage); }
+      });
+      zoomOutBtn.addEventListener('click', ()=>{
+        currentScale = Math.max(0.25, currentScale - 0.25);
+        if(currentPdf){ if(isShowingAll) renderAllPages(); else renderPdfPage(currentPage); }
+      });
+
+      // transform each li -> latihan-item with thumb + meta
+      rawItems.forEach(li => {
+        const a = li.querySelector('a');
+        if(!a) return;
+
+        const href = a.getAttribute('href') || '';
+        const filename = href.split('/').pop() || href;
+        const ext = (filename.split('.').pop() || '').toLowerCase();
+
+        // structure: .latihan-item with thumb + meta (keperluan transform)
+        const item = document.createElement('div');
+        item.className = 'latihan-item';
+
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb';
+        thumb.textContent = 'Memuat...';
+        // make thumb clickable
+        thumb.tabIndex = 0;
+        item.appendChild(thumb);
+
+        const meta = document.createElement('div');
+        meta.className = 'item-meta';
+
+        const titleLink = document.createElement('a');
+        titleLink.className = 'title';
+        titleLink.href = href;
+        titleLink.target = '_blank';
+        titleLink.rel = 'noopener';
+        titleLink.textContent = a.textContent.trim() || filename;
+        meta.appendChild(titleLink);
+
+        const metaRow = document.createElement('div');
+        metaRow.className = 'meta-row';
+
+        const downloadBtn = document.createElement('a');
+        downloadBtn.className = 'btn-small';
+        downloadBtn.href = href;
+        downloadBtn.setAttribute('download', filename);
+        downloadBtn.textContent = 'Download';
+        downloadBtn.title = 'Download file';
+        metaRow.appendChild(downloadBtn);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'muted';
+        nameSpan.style.fontSize = '13px';
+        nameSpan.textContent = filename;
+        metaRow.appendChild(nameSpan);
+
+        meta.appendChild(metaRow);
+        item.appendChild(meta);
+
+        li.replaceWith(item);
+
+        // --- Image types ---
+        if(['jpg','jpeg','png','webp','gif'].includes(ext)) {
+          const img = document.createElement('img');
+          img.src = href;
+          img.alt = titleLink.textContent;
+          img.onload = () => {
+            thumb.textContent = '';
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.objectFit = 'contain';
+            thumb.appendChild(img);
+
+            // click to open fullscreen image preview
+            thumb.addEventListener('click', ()=> openImagePreview(href, titleLink.textContent));
+            thumb.addEventListener('keypress', (ev)=>{ if(ev.key === 'Enter') openImagePreview(href, titleLink.textContent); });
+          };
+          img.onerror = () => {
+            thumb.textContent = 'Gagal memuat gambar';
+          };
+
+        // --- PDF: render halaman 1 (kualitas tinggi lalu scale via CSS) ---
+        } else if(ext === 'pdf') {
+          const loadingTask = pdfjsLib.getDocument(href);
+          loadingTask.promise.then(pdf => pdf.getPage(1))
+          .then(page => {
+            const targetRenderWidth = 1600; // besar untuk kualitas
+            const viewport = page.getViewport({ scale: 1 });
+            const scale = targetRenderWidth / viewport.width;
+            const scaledViewport = page.getViewport({ scale });
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = Math.floor(scaledViewport.width);
+            canvas.height = Math.floor(scaledViewport.height);
+
+            return page.render({ canvasContext: ctx, viewport: scaledViewport }).promise.then(()=>canvas);
+          })
+          .then(canvas => {
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL('image/png');
+            img.alt = titleLink.textContent + ' (preview)';
+            img.style.display = 'block';
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.objectFit = 'contain';
+            thumb.textContent = '';
+            thumb.appendChild(img);
+
+            // click to open PDF viewer modal (full PDF, all pages navigable)
+            thumb.addEventListener('click', ()=> openPdfPreview(href, titleLink.textContent));
+            thumb.addEventListener('keypress', (ev)=>{ if(ev.key === 'Enter') openPdfPreview(href, titleLink.textContent); });
+          }).catch(err => {
+            thumb.textContent = 'Preview tidak tersedia';
+            thumb.style.fontSize = '12px';
+            thumb.style.color = 'var(--muted)';
+            console.warn('PDF preview error', href, err);
+
+            // still allow opening PDF viewer as fallback
+            thumb.addEventListener('click', ()=> openPdfPreview(href, titleLink.textContent));
+          });
+
+        } else {
+          // tipe file lain: tampilkan label ekstensi
+          thumb.textContent = ext ? ext.toUpperCase() : 'FILE';
+          thumb.style.fontWeight = '700';
+          thumb.style.color = 'var(--muted)';
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
